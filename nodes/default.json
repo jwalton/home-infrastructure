@@ -1,0 +1,10 @@
+{
+    "run_list":  [
+        "ntp",
+        "hostname"
+    ],
+    "set_fqdn":  "my.server.com",
+    "ntp": {
+        "servers": ["ntp.ubuntu.com", "pool.ntp.org"]
+    }
+}
