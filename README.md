@@ -1,9 +1,11 @@
 Setup
 =====
 
-Install homebrew, then:
+* Install virtualbox and vagrant
+* `vagrant plugin install vagrant-omnibus`
+* `vagrant plugin install vagrant-berkshelf`
 
-    brew install rbenv ruby-build
+You don't *need* to have Ruby or Chef installed on your development machine at all, but optionally install rbenv and ruby-build, then:
     echo 'eval "$(rbenv init -)"' >> ~/.bash_profile && source ~/.bash_profile
     rbenv rehash
     rbenv install 1.9.3-p385
@@ -11,17 +13,9 @@ Install homebrew, then:
     rbenv global  1.9.3-p385
     gem install chef
     gem install berkshelf
-    rbenv rehash
-    mkdir project
-    cd project
-    knife solo init .
-    vagrant init
-    vagrant plugin install vagrant-omnibus
-    vagrant plugin install vagrant-berkshelf
-
-Optionally:
-
+    gem install foodcritic # Handy for sanity-checking your cookbooks.
     gem install knife-solo
+    rbenv rehash
 
 Create a cookbook
 =================
@@ -29,11 +23,10 @@ Create a cookbook
 * `knife cookbook create [cookbookname] -o local_cookbooks/`
 * Add your cookbook to the Berksfile.
 * Add your cookbook to the run_list in `nodes/default.json`.
-* Optionally add a Berksfile to `local_cookbooks/[cookbookname]` with a `metadata` line to
-  automatically fetch dependencies from metadata.rb.
+* Test your cookbook with `vagrant up` and `vagrant provision`.
 
-Installation
-============
+Deploying to a server
+=====================
 
 Install to a server with:
 
