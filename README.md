@@ -31,3 +31,6 @@ Deploying to a server
 Install to a server with:
 
     ./install.sh user@host.com [node.json]
+
+Note that you do *not* want to run `chef-install.sh` on your development machine - it's the script that gets run on the target to run chef there.  Running it on your local machine will run your cookbook on your local machine, which is usually undesirable.
+
