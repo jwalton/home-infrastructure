@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
   config.berkshelf.enabled = true
   # config.berkshelf.berksfile_path = Pathname(__FILE__).dirname.join('chef', 'Berksfile')
 
-  chef_json = JSON.parse(File.read(Pathname(__FILE__).dirname.join('nodes', 'default.json')))
+  chef_json = JSON.parse(File.read(Pathname(__FILE__).dirname.join('nodes', 'galactica.json')))
   chef_json.merge!({
       :instance_role => "vagrant",
       :set_fqdn => "vagrant-#{`whoami`.strip()}"

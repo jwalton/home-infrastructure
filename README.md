@@ -36,19 +36,24 @@ or:
 
     scp ~/.ssh/id_rsa.pub user@host:~/.ssh/authorized_keys
 
-Finally, SSH to the target machine and run `sudo apt-get update`.
+Finally, SSH to the target machine, run `sudo apt-get update`, `sudo apt-get upgrade -u`, and
+finally add the line:
+
+    Defaults    exempt_group=sudo
+
+to /etc/sudoers, so chef can run without being asked for a password.
 
 ### Data Bags
 
-Run:
+On the local machine, run:
 
-    sudo mkdir -p /var/chef/home-infrastructure/data_bags
-    sudo cp -r databags/* /var/chef/home-infrastructure/data_bags
+    scp -r ./data_bags user@host.com:~/data_bags
 
-Then edit the data in /var/chef/home-infrastructure/data_bags as appropriate.  The data bags from
-/var/chef/home-infrastructure/data_bags will only be used in a full install; for vagrant, the
-data bags in the project will be used, instead.
+Where "user@host.com" should be replaced with the address of the new server.  SSH to the new server,
+edit the contents of the data-bags as required, then run:
 
+    sudo mv ./data_bags /var/chef
+    sudo chmod 700 /var/chef/data-bags
 
 Deploying to a server
 =====================

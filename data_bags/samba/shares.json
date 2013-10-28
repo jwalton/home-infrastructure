@@ -1,7 +1,11 @@
 {
   "id": "shares",
   "shares": {
-    "export": {
+    "homes": {
+      "writable": "yes",
+      "browsable": "no"
+    },
+    "virtualbox": {
       "comment": "Virtualbox",
       "path": "/home/virtualbox",
       "guest ok": "no",
