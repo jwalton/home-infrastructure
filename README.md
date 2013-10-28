@@ -17,6 +17,9 @@ Testing with Vagrant
 * `vagrant plugin install vagrant-berkshelf`
 * `vagrant up` to create a VM using attributes from default.json
 
+If you want to test galactica, you should edit the Vagrantfile and change "default.json" to "galactica.json".
+Similar for other servers.
+
 Prerequisites when creating a new server
 ========================================
 
@@ -58,10 +61,10 @@ edit the contents of the data-bags as required, then run:
 Deploying to a server
 =====================
 
-Install to a server with:
+Installing to galactica, assuming you created a user called "ubuntu" when installing Ubuntu:
 
-    ssh-copy-id user@host.com
-    ./install.sh user@host.com [node.json]
+    ssh-copy-id ubuntu@[galactica-ip-goes-here]
+    ./install.sh ubuntu@[galactica-ip-goes-here] nodes/galactica.json
 
 Note that you do *not* want to run `chef-install.sh` on your development machine - it's the script that gets run on the target to run chef there.  Running it on your local machine will run your cookbook on your local machine, which is usually undesirable.
 
