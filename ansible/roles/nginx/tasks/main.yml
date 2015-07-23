@@ -1,0 +1,30 @@
+# Nginx
+- name: Make nginx config folder
+  file: path=/opt/nginx state=directory recurse=yes owner=root group=adm
+- name: Make nginx SSL folder
+  file: path=/opt/nginx/ssl state=directory recurse=yes owner=root group=adm mode=700
+- name: Generate nginx SSL cert
+  command: >
+    openssl req -new -nodes -x509 -subj "/C=CA/ST=Onatrio/L=Ottawa/O=IT/CN=dashboard.benbria.com"
+    -days 3650 -keyout /opt/nginx/ssl/server.key -out /opt/nginx/ssl/server.crt -extensions v3_ca
+  args:
+    creates: /opt/nginx/ssl/server.crt
+
+- name: Create other nginx sites folder
+  file: path=/opt/nginx/conf.d state=directory recurse=yes owner=root group=adm
+
+- name: Create nginx jasonwalton.ca config
+  template: src=jasonwalton.ca.conf dest=/opt/nginx/conf.d/jasonwalton.ca.conf
+
+- name: Create nginx thedreaming.org config
+  template: src=thedreaming.org.conf dest=/opt/nginx/conf.d/thedreaming.org.conf
+
+- shell: docker stop nginx || true
+- shell: docker rm nginx || true
+- name:  Install nginx
+  shell: >
+    docker run -d --name nginx --restart=always
+    -p 80:80
+    -v /opt/nginx/conf.d:/etc/nginx/conf.d
+    -v /opt/nginx/logs:/var/log
+    nginx:latest

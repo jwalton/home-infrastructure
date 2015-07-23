@@ -1,9 +1,0 @@
-{
-    "id": "jason",
-    "smbpasswd": "secret",
-    "comment": "Jason Walton",
-    "groups": ["adm", "cdrom", "sudo", "dip", "plugdev", "lpadmin", "sambashare"],
-    "passwd": "secret",
-    "ssh_keys": [
-    ]
-}

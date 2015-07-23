@@ -1,0 +1,40 @@
+# Create a user for vboxweb-service
+- user: name=vbox groups=vboxusers append=yes password={{ vbox_crypt_password }}
+
+# Configure vboxweb-service and make sure it's running
+- template: src=default-virtualbox dest=/etc/default/virtualbox
+  notify:
+    - restart vboxweb-service
+- service: name=vboxweb-service state=started
+
+# Create phpvirtualbox config
+- name: Make phpvirtualbox config folder
+  file: path=/opt/phpvirtualbox state=directory recurse=yes owner=root group=adm
+- template: src=config-servers.php dest=/opt/phpvirtualbox/config-servers.php
+
+# Fire up phpvirtualbox via docker.  Note the IP here comes from the IP we configure in /etc/default/docker.
+- shell: docker stop phpvirtualbox || true
+- shell: docker rm phpvirtualbox || true
+- name:  Run phpvirtualbox
+  shell: >
+    docker run -d --name phpvirtualbox --restart=always
+    -p 8080:80
+    -v /opt/phpvirtualbox/config-servers.php:/var/www/config-servers.php:ro
+    -e LOCALHOST_PORT_18083_TCP=172.17.42.1:18083
+    -e LOCALHOST_NAME=default
+    clue/phpvirtualbox
+
+# TODO: This fails because docker-py refuses to mount config-servers.php overtop of an existing file.  -_-
+# - name: phpvirtualbox container
+#   docker:
+#     name: phpvirtualbox
+#     image: clue/phpvirtualbox
+#     state: started
+#     restart_policy: always
+#     ports:
+#       - "8080:80"
+#     volumes:
+#       - "/opt/phpvirtualbox/config-servers.php:/var/www/config-servers.php:ro"
+#     env:
+#       LOCALHOST_PORT_18083_TCP: 172.17.42.1:18083
+#       LOCALHOST_NAME: "{{ inventory_hostname_short }}"

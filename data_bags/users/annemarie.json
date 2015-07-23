@@ -1,9 +1,0 @@
-{
-    "id": "annemarie",
-    "smbpasswd": "secret",
-    "comment": "Anne Marie Walton",
-    "groups": ["adm", "cdrom", "sudo", "dip", "plugdev", "lpadmin", "sambashare"],
-    "passwd": "secret",
-    "ssh_keys": [
-    ]
-}

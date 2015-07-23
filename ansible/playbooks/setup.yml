@@ -1,0 +1,14 @@
+---
+- name: Deploy
+  hosts: all
+  sudo: yes
+  vars:
+    # Run `mkpasswd --method=SHA-512` to generate your own password.
+    vbox_crypt_password: $6$nC1K9U9drtI2$ZVdIyVaDgKQdD0eCIEPf6OFnvJopNOOSHaiH/exFZEPV6SN3MRaATKAY8hkO6BkyeNUuEbWM9GQaC96gqbVPm.
+    vbox_plaintext_password: vbox
+  roles:
+    - host
+    - docker
+    - azavea.virtualbox
+    - phpvirtualbox
+    - nginx

@@ -1,23 +1,41 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.configure("2") do |config|
-  config.vm.box = "opscode-ubuntu-12.04"
-  config.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box"
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "ubuntu/trusty64"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  config.vm.provider "virtualbox" do |vb|
+    # Use VBoxManage to customize the VM. For example to change memory:
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+  end
+
+  # Use ansible for configuration
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "./ansible/playbooks/setup.yml"
+    ansible.raw_ssh_args = ['-o ForwardAgent=yes -o UserKnownHostsFile=/dev/null']
+    ansible.verbose = 'v'
+  end
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # config.vm.network :forwarded_port, guest: 80, host: 8080
+  # accessing "localhost:8443" will access port 80 on the guest machine.
+  config.vm.network "private_network", ip: "192.168.10.12"
 
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  config.vm.network :private_network, ip: "192.168.10.12"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network :public_network
+  # config.vm.network "forwarded_port", guest: 8000, host: 8000
+  # config.vm.network "forwarded_port", guest: 8443, host: 8443
+  # config.vm.network "forwarded_port", guest: 9998, host: 9998
+  # config.vm.network "forwarded_port", guest: 9999, host: 9999, protocol: "udp"
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -25,33 +43,4 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
 
-  # Install the latests version of chef
-  config.omnibus.chef_version = :latest
-  #config.omnibus.chef_version = '10.26.0'
-
-  # Use the Berksfile
-  config.berkshelf.enabled = true
-  # config.berkshelf.berksfile_path = Pathname(__FILE__).dirname.join('chef', 'Berksfile')
-
-  chef_json = JSON.parse(File.read(Pathname(__FILE__).dirname.join('nodes', 'galactica.json')))
-  chef_json.merge!({
-      :instance_role => "vagrant",
-      :set_fqdn => "vagrant-#{`whoami`.strip()}"
-  })
-
-  # Enable provisioning with chef solo, specifying a cookbooks path, roles
-  # path, and data_bags path (all relative to this Vagrantfile), and adding
-  # some recipes and/or roles.
-  #
-  config.vm.provision :chef_solo do |chef|
-      chef.data_bags_path = "data_bags"
-      chef.roles_path = "roles"
-      chef.cookbooks_path = "." # Load from Berksfile.
-      for recipe in chef_json["run_list"] do
-          chef.add_recipe(recipe)
-      end
-
-      # Custom JSON node attributes for chef
-      chef.json = chef_json
-  end
 end

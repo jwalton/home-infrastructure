@@ -1,0 +1,5 @@
+- hostname: name={{ inventory_hostname_short }}
+- user: name=jason shell=/bin/bash groups=adm,sudo append=yes
+- file: path=~jason/.ssh state=directory recurse=yes owner=jason group=jason mode=700
+- template: src=authorized_keys dest=~jason/.ssh/authorized_keys owner=jason group=jason mode=600
+- template: src=sudoers-jason dest=/etc/sudoers.d/jason owner=root grou-root mode=440

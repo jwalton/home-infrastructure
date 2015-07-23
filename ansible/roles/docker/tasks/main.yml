@@ -1,0 +1,16 @@
+- apt_key: keyserver=keyserver.ubuntu.com id=36A1D7869245C8950F966E92D8576A8BA88D21E9
+- apt_repository: repo='deb https://get.docker.com/ubuntu docker main' state=present
+- template: src=default dest=/etc/default/docker mode=644
+- apt: name=lxc-docker state=present
+- name: Install pip python package
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  with_items:
+    - python-dev
+    - python-pip
+- name: Install Docker-py
+  # Need v1.1.0 or else "AttributeError: 'module' object has no attribute 'DEFAULT_DOCKER_API_VERSION'"
+  pip: name=docker-py version=1.1.0
