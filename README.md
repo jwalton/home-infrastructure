@@ -34,6 +34,13 @@ or:
 
     scp ~/.ssh/id_rsa.pub user@host:~/.ssh/authorized_keys
 
+Finally, SSH to the target machine, run `sudo apt-get update`, `sudo apt-get upgrade -u`, and
+finally add the line:
+
+    Defaults    exempt_group=sudo
+
+to /etc/sudoers, so chef can run without being asked for a password.
+
 
 Deploying to a server
 =====================
